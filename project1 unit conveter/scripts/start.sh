@@ -16,8 +16,8 @@ sudo rm -rf /var/www/html/*
  
 # Copy new files from CodeDeploy temp directory
 sudo cp /home/ec2-user/deploy-temp/index.html /var/www/html/
-sudo cp /home/ec2-user/deploy-temp/styles.css /var/www/html/
-sudo cp /home/ec2-user/deploy-temp/app.js /var/www/html/
+sudo cp /home/ec2-user/deploy-temp/style.css /var/www/html/
+sudo cp /home/ec2-user/deploy-temp/myscript.js /var/www/html/
  
 # Set proper permissions
 sudo chown -R apache:apache /var/www/html/
