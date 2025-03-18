@@ -2,38 +2,23 @@
 
 set -e  # Exit immediately if a command fails
 
-echo "Starting deployment..."
+echo "Starting deployment via AWS CodeDeploy..."
 
-# Update package list
-sudo apt update -y
-
-# Install Apache (Only if not already installed)
-if ! command -v apache2 &> /dev/null; then
-    sudo apt install -y apache2
-fi
-
-# Ensure Apache is running
-sudo systemctl restart apache2
-sudo systemctl enable apache2
+# Define destination directory (where your files are deployed)
+DEST_DIR="/var/www/html"
 
 # Ensure the web root directory exists
-if [ ! -d "/var/www/html" ]; then
-    sudo mkdir -p /var/www/html
-fi
-
-# Clear existing website files
-sudo rm -rf /var/www/html/*
-
-# Ensure source directory exists before copying files
-if [ -d "/home/ubuntu/deploy-temp" ]; then
-    sudo cp /home/ubuntu/deploy-temp/* /var/www/html/
-else
-    echo "Error: Source directory /home/ubuntu/deploy-temp/ does not exist!"
-    exit 1
+if [ ! -d "$DEST_DIR" ]; then
+    sudo mkdir -p "$DEST_DIR"
 fi
 
 # Set correct ownership and permissions
-sudo chown -R www-data:www-data /var/www/html/
-sudo chmod -R 755 /var/www/html/
+echo "Setting correct permissions..."
+sudo chown -R www-data:www-data "$DEST_DIR"
+sudo chmod -R 755 "$DEST_DIR"
 
-echo "Deployment completed successfully!
+# Restart Apache to apply changes
+echo "Restarting Apache server..."
+sudo systemctl restart apache2
+
+echo "Deployment completed successfully!"
