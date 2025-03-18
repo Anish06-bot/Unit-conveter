@@ -7,7 +7,7 @@ echo "Starting deployment..."
 # Update package list
 sudo apt update -y
 
-# Install Apache if not already installed
+# Install Apache (Only if not already installed)
 if ! command -v apache2 &> /dev/null; then
     sudo apt install -y apache2
 fi
@@ -16,33 +16,24 @@ fi
 sudo systemctl restart apache2
 sudo systemctl enable apache2
 
-# Define the deployment source and destination
-SOURCE_DIR="/home/ubuntu/deploy-temp"
-DEST_DIR="/var/www/html"
-
 # Ensure the web root directory exists
-if [ ! -d "$DEST_DIR" ]; then
-    sudo mkdir -p "$DEST_DIR"
+if [ ! -d "/var/www/html" ]; then
+    sudo mkdir -p /var/www/html
 fi
 
 # Clear existing website files
-sudo rm -rf "$DEST_DIR"/*
+sudo rm -rf /var/www/html/*
 
 # Ensure source directory exists before copying files
-if [ -d "$SOURCE_DIR" ]; then
-    sudo cp -r "$SOURCE_DIR/index.html" "$DEST_DIR/"
-    sudo cp -r "$SOURCE_DIR/style.css" "$DEST_DIR/"
-    sudo cp -r "$SOURCE_DIR/myscript.js" "$DEST_DIR/"
+if [ -d "/home/ubuntu/deploy-temp" ]; then
+    sudo cp /home/ubuntu/deploy-temp/* /var/www/html/
 else
-    echo "Error: Source directory $SOURCE_DIR does not exist!"
+    echo "Error: Source directory /home/ubuntu/deploy-temp/ does not exist!"
     exit 1
 fi
 
 # Set correct ownership and permissions
-sudo chown -R www-data:www-data "$DEST_DIR"
-sudo chmod -R 755 "$DEST_DIR"
+sudo chown -R www-data:www-data /var/www/html/
+sudo chmod -R 755 /var/www/html/
 
-# Restart Apache to apply changes
-sudo systemctl restart apache2
-
-echo "Deployment completed successfully!"
+echo "Deployment completed successfully!
