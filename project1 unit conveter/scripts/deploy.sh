@@ -1,16 +1,24 @@
 #!/bin/bash
 
-set -e  # Exit immediately if a command fails
+set -e  # Exit if any command fails
 
 echo "Starting deployment via AWS CodeDeploy..."
 
-# Define destination directory (where your files are deployed)
+# Define deployment directory
 DEST_DIR="/var/www/html"
 
 # Ensure the web root directory exists
 if [ ! -d "$DEST_DIR" ]; then
     sudo mkdir -p "$DEST_DIR"
 fi
+
+# Remove old files before deploying new ones
+echo "Removing old files..."
+sudo rm -rf $DEST_DIR/*
+
+# Copy new files from the deployment directory to Apache's web root
+echo "Copying new files..."
+sudo cp -r * "$DEST_DIR"
 
 # Set correct ownership and permissions
 echo "Setting correct permissions..."
